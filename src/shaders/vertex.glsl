@@ -1,5 +1,7 @@
-uniform float uElevation;
-uniform vec2 uFrequency;
+uniform float uNoiseDensity;
+uniform float uNoiseStrength;
+uniform float uRotationAmplitude;
+uniform float uRotationFrequency;
 uniform float uTime;
 uniform float uSpeed;
 
@@ -107,33 +109,27 @@ float pnoise(vec3 P, vec3 rep) {
     return 2.2 * n_xyz;
 }
 
-mat2 get2dRotateMatrix(float _angle) {
-    return mat2(cos(_angle), -sin(_angle), sin(_angle), cos(_angle));
+mat3 rotation3dY(float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+
+    return mat3(c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c);
+}
+
+vec3 rotateY(vec3 v, float angle) {
+    return rotation3dY(angle) * v;
 }
 
 void main() {
-
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-
-    float distoration = pnoise((normal + uTime * uSpeed) * 1.0, vec3(10.0)) * 1.0;
-
+    float t = uTime * uSpeed;
+    float distoration = pnoise((normal + t) * uNoiseDensity, vec3(10.0)) * uNoiseStrength;
     vec3 pos = position + (normal * distoration);
 
-    // sin(modelPosition.y * uFrequency.y + uTime * uSpeed) * uElevation;
-
-    // elevation += cnoise(vec3(modelPosition.xz, uTime));
-
-    // modelPosition.z += elevation;
+    float angle = sin(uv.y * uRotationFrequency + t) * uRotationAmplitude;
+    pos = rotateY(pos, angle);
 
     vDistoration = distoration;
 
-    // float angle = (position.y);
-    // mat2 rotateMatrix = get2dRotateMatrix(angle);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
 
-    // modelPosition.xz = rotateMatrix * modelPosition.xz;
-
-    vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 projectedPosition = projectionMatrix * viewPosition;
-
-    gl_Position = projectedPosition;
 }

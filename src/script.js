@@ -23,21 +23,19 @@ const size = {
 const scene = new THREE.Scene()
 
 //_ Create Geometry
-const sphere = new THREE.SphereBufferGeometry(4, 64, 64)
+const sphere = new THREE.IcosahedronBufferGeometry(5, 64)
 
 //_ Create Material
 const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
   uniforms: {
-    uElevation: { value: 1 },
-    uFrequency: { value: new THREE.Vector2(4, 1.5) },
-    uSpeed: { value: 0.75 },
+    uNoiseDensity: { value: 1.8 },
+    uNoiseStrength: { value: 1.8 },
+    uRotationFrequency: { value: 2.5 },
+    uRotationAmplitude: { value: 2.5 },
+    uSpeed: { value: 0.3 },
     uTime: { value: 0 },
-    uDepthColor: { value: new THREE.Color("#186681") },
-    uSurfacerColor: { value: new THREE.Color("#9bd8ff") },
-    uColorOffset: { value: 1 },
-    uColorMultiplier: { value: 1.2 },
   },
 })
 
@@ -64,6 +62,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setSize(size.width, size.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setClearColor("#151B26", 1)
 
 //_ Resize events
 window.addEventListener("resize", () => {
@@ -81,25 +80,32 @@ window.addEventListener("resize", () => {
 })
 
 gui
-  .add(material.uniforms.uElevation, "value")
+  .add(material.uniforms.uNoiseDensity, "value")
   .min(0)
   .max(10)
   .step(0.001)
-  .name("uElevation")
+  .name("uNoiseDensity")
 
 gui
-  .add(material.uniforms.uFrequency.value, "x")
+  .add(material.uniforms.uNoiseStrength, "value")
   .min(0)
   .max(10)
   .step(0.001)
-  .name("uFrequencyX")
+  .name("uNoiseStrength")
 
 gui
-  .add(material.uniforms.uFrequency.value, "y")
+  .add(material.uniforms.uRotationFrequency, "value")
   .min(0)
   .max(10)
   .step(0.001)
-  .name("uFrequencyY")
+  .name("uRotationFrequency")
+
+gui
+  .add(material.uniforms.uRotationAmplitude, "value")
+  .min(0)
+  .max(10)
+  .step(0.001)
+  .name("uRotationAmplitude")
 
 gui
   .add(material.uniforms.uSpeed, "value")
@@ -107,20 +113,6 @@ gui
   .max(4)
   .step(0.001)
   .name("uSpeed")
-
-gui
-  .add(material.uniforms.uColorOffset, "value")
-  .min(0)
-  .max(4)
-  .step(0.001)
-  .name("uColorOffset")
-
-gui
-  .add(material.uniforms.uColorMultiplier, "value")
-  .min(0)
-  .max(4)
-  .step(0.001)
-  .name("uColorMultiplier")
 
 //_ Add controls
 const controls = new OrbitControls(camera, canvas)
