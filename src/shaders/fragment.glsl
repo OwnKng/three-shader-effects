@@ -1,4 +1,3 @@
-uniform float uIntensity;
 varying float vDistoration;
 
 float hue2rgb(float f1, float f2, float hue) {
@@ -45,7 +44,6 @@ vec3 hsl2rgb(float h, float s, float l) {
 }
 
 void main() {
-    vec3 color = hsl2rgb(0.7 + vDistoration * 0.1, 0.6, 0.5 + vDistoration * 0.5);
-
+    vec3 color = hsl2rgb(0.6 + vDistoration * 0.2, 0.5, 0.5);
     gl_FragColor = vec4(color, 1.0);
 }

@@ -23,18 +23,18 @@ const size = {
 const scene = new THREE.Scene()
 
 //_ Create Geometry
-const sphere = new THREE.IcosahedronBufferGeometry(5, 64)
+const sphere = new THREE.IcosahedronBufferGeometry(5, 48)
 
 //_ Create Material
 const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
   uniforms: {
-    uNoiseDensity: { value: 1.8 },
-    uNoiseStrength: { value: 1.8 },
-    uRotationFrequency: { value: 2.5 },
-    uRotationAmplitude: { value: 2.5 },
-    uSpeed: { value: 0.3 },
+    uNoiseDensity: { value: 1.5 },
+    uNoiseStrength: { value: 1 },
+    uRotationFrequency: { value: 3 },
+    uRotationAmplitude: { value: 6 },
+    uSpeed: { value: 0.2 },
     uTime: { value: 0 },
   },
 })
