@@ -6,7 +6,6 @@ uniform float uTime;
 uniform float uSpeed;
 
 varying float vDistoration;
-varying float vElevation;
 
 // GLSL textureless classic 3D noise "cnoise",
   // with an RSL-style periodic variant "pnoise".
@@ -130,7 +129,6 @@ void main() {
     pos = rotateY(pos, angle);
 
     vDistoration = distoration;
-    vElevation = abs(pos.z);
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
 

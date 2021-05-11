@@ -2,6 +2,7 @@ import "./style.css"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import * as dat from "dat.gui"
+import gsap from "gsap"
 
 //_ Import shaders
 import vertexShader from "./shaders/vertex.glsl"
@@ -30,7 +31,7 @@ const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
   uniforms: {
-    uNoiseDensity: { value: 1.5 },
+    uNoiseDensity: { value: 0 },
     uNoiseStrength: { value: 1 },
     uRotationFrequency: { value: 3 },
     uRotationAmplitude: { value: 6 },
@@ -52,7 +53,7 @@ const camera = new THREE.PerspectiveCamera(
   0.01,
   1000
 )
-camera.position.set(2, 2, 2)
+camera.position.set(0, 10, 10)
 scene.add(camera)
 
 //_ Create renderer
@@ -118,6 +119,36 @@ gui
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
+//_ Interactions
+const rayCaster = new THREE.Raycaster()
+
+const setHover = () => {
+  rayCaster.setFromCamera(mouse, camera)
+
+  const intersects = rayCaster.intersectObject(mesh)
+
+  if (intersects.length > 0) {
+    gsap.to(material.uniforms.uNoiseDensity, {
+      duration: 0.2,
+      value: 1.5,
+    })
+  }
+
+  if (!intersects.find((intersect) => intersect.object === mesh)) {
+    gsap.to(material.uniforms.uNoiseDensity, {
+      duration: 0.2,
+      value: 0,
+    })
+  }
+}
+
+const mouse = new THREE.Vector2()
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / size.width) * 2 - 1
+  mouse.y = -(event.clientY / size.height) * 2 + 1
+})
+
 //_ Frame function
 const clock = new THREE.Clock()
 
@@ -128,6 +159,11 @@ const frame = () => {
   material.uniforms.uTime.value = elpasedTime
 
   controls.update()
+
+  camera.lookAt(mesh.position)
+
+  //* Interactions
+  setHover()
 
   renderer.render(scene, camera)
 
