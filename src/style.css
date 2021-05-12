@@ -1,21 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+h1 {
+  position: absolute;
+  margin: 0px auto;
+  width: 100%;
+  text-align: center;
+  top: 50%;
+  color: white;
+}
+
 .webgl {
   position: fixed;
   top: 0;
   left: 0;
   outline: none;
-  z-index: -1;
-}
-
-p {
-  font-size: 20px;
-}
-
-.container {
-  margin-top: 500px;
-  height: 200vh;
-}
-
-.test {
-  position: fixed;
-  left: 50%;
 }
