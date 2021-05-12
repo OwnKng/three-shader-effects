@@ -1,6 +1,5 @@
 import "./style.css"
 import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import * as dat from "dat.gui"
 import gsap from "gsap"
 
@@ -115,39 +114,62 @@ gui
   .step(0.001)
   .name("uSpeed")
 
-//_ Add controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
-
 //_ Interactions
-const rayCaster = new THREE.Raycaster()
+let _event = {
+  y: 0,
+  deltaY: 0,
+}
 
-const setHover = () => {
-  rayCaster.setFromCamera(mouse, camera)
+let percentage = 0
 
-  const intersects = rayCaster.intersectObject(mesh)
+// let divContainer = document.querySelector(".container")
 
-  if (intersects.length > 0) {
+// let maxHeight =
+//   (divContainer.clientHeight || divContainer.offsetHeight) - window.innerHeight
+
+const onScroll = () => {
+  _event.y = window.scrollY / document.body.clientHeight
+}
+
+// const lerp = (a, b, t) => {
+//   return (1 - t) * a + t * b
+// }
+
+window.addEventListener("wheel", onScroll, { passive: false })
+
+document.addEventListener("scroll", onScroll, false)
+
+const animate = (yPos) => {
+  if (yPos > 0.1) {
     gsap.to(material.uniforms.uNoiseDensity, {
       duration: 0.2,
-      value: 1.5,
+      value: 1.8,
     })
   }
 
-  if (!intersects.find((intersect) => intersect.object === mesh)) {
+  if (yPos > 0.4) {
+    gsap.to(camera.position, {
+      duration: 1,
+      x: 2,
+      y: 15,
+      z: 15,
+    })
+  }
+
+  if (yPos < 0.1) {
     gsap.to(material.uniforms.uNoiseDensity, {
       duration: 0.2,
       value: 0,
     })
+
+    gsap.to(camera.position, {
+      duration: 1,
+      x: 0,
+      y: 10,
+      z: 10,
+    })
   }
 }
-
-const mouse = new THREE.Vector2()
-
-window.addEventListener("mousemove", (event) => {
-  mouse.x = (event.clientX / size.width) * 2 - 1
-  mouse.y = -(event.clientY / size.height) * 2 + 1
-})
 
 //_ Frame function
 const clock = new THREE.Clock()
@@ -157,13 +179,11 @@ const frame = () => {
 
   //* Update uTime
   material.uniforms.uTime.value = elpasedTime
-
-  controls.update()
-
   camera.lookAt(mesh.position)
 
-  //* Interactions
-  setHover()
+  // //* Interactions
+  // percentage = lerp(percentage, -_event.y, 0.7)
+  animate(_event.y)
 
   renderer.render(scene, camera)
 
