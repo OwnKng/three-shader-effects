@@ -1,8 +1,7 @@
 import * as THREE from "three"
 import "./style.css"
-import vertexShader from "./shaders/planeShader/vertex.glsl"
-import fragmentShader from "./shaders/planeShader/fragment.glsl"
-import gsap from "gsap"
+import vertexShader from "./shaders/vertex.glsl"
+import fragmentShader from "./shaders/fragment.glsl"
 
 //_ select canvas
 const canvas = document.querySelector("canvas.webgl")
@@ -64,14 +63,6 @@ window.addEventListener("touchmove", (event) => {
   mouse.y = event.touches[0].clientY / sizes.height
 })
 
-const handleInteraction = () => {
-  gsap.to(mesh.rotation, {
-    duration: 0.5,
-    x: -mouse.y * 0.25,
-    y: -mouse.y * 0.25,
-  })
-}
-
 //_ Window events
 window.addEventListener("resize", () => {
   size.height = window.innerHeight
@@ -93,9 +84,6 @@ const frame = () => {
   renderer.render(scene, camera)
 
   const elapsedTime = clock.getElapsedTime()
-
-  //* Manage interaction
-  handleInteraction()
 
   //* Update materials
   material.uniforms.uTime.value = elapsedTime

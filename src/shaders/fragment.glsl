@@ -1,4 +1,7 @@
-varying float vDistoration;
+uniform vec2 uBaseCol;
+
+varying float vDistortion;
+varying vec2 vUv;
 
 float hue2rgb(float f1, float f2, float hue) {
     if(hue < 0.0)
@@ -44,6 +47,9 @@ vec3 hsl2rgb(float h, float s, float l) {
 }
 
 void main() {
-    vec3 color = hsl2rgb(0.6 + vDistoration * 0.2, 0.5, 0.5);
-    gl_FragColor = vec4(color, 1.0);
+    float strength = smoothstep(0.05, 0.048, abs(distance(vUv, vec2(0.5)) - 0.4));
+
+    vec3 color = hsl2rgb(0.6 + (uBaseCol.x * 0.1) + vDistortion * 0.1, 1.0, 0.5 + (uBaseCol.y * 0.25));
+
+    gl_FragColor = vec4(color, strength);
 }
